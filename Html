@@ -1,0 +1,31 @@
+<script>
+async function sendMessage() {
+  const chat = document.getElementById("chat");
+  const input = document.getElementById("input");
+  const text = input.value.trim();
+  if (!text) return;
+
+  chat.innerHTML += `<div class="text-right">Kamu: ${text}</div>`;
+  input.value = "";
+
+  // Loading
+  const loading = document.createElement("div");
+  loading.className = "text-left text-gray-400 italic";
+  loading.id = "loading";
+  loading.innerText = "Unlonk AI sedang mengetik...";
+  chat.appendChild(loading);
+  chat.scrollTop = chat.scrollHeight;
+
+  const res = await fetch("/api/chat", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ message: text })
+  });
+
+  const data = await res.json();
+
+  document.getElementById("loading").remove();
+  chat.innerHTML += `<div class="text-left text-blue-400">Unlonk AI: ${data.reply}</div>`;
+  chat.scrollTop = chat.scrollHeight;
+}
+</script>
